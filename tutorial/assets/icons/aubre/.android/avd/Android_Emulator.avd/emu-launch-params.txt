@@ -1,0 +1,10 @@
+C:\Program Files\Android\Android Studio\jbr\bin
+C:\Users\aubre\AppData\Local\Android\Sdk\emulator\emulator.exe
+7
+C:\Users\aubre\AppData\Local\Android\Sdk\emulator\emulator.exe
+-netdelay
+none
+-netspeed
+full
+-avd
+Android_Emulator
