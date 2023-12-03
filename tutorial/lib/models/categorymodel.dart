@@ -269,7 +269,7 @@ class PageantItem extends StatelessWidget {
                     builder: (context) => ScoreCard(
                       eventId: event_id,
                       eventData: eventData,
-                      judges: [],
+                  //    judges: [],
                     ),
                   ),
                 );
@@ -558,7 +558,7 @@ class TalentShowItem extends StatelessWidget {
                     builder: (context) => ScoreCard(
                       eventId: event_id,
                       eventData: eventData,
-                      judges: [],
+                  //   judges: [],
                     ),
                   ),
                 );
@@ -845,7 +845,7 @@ class DebateItem extends StatelessWidget {
                     builder: (context) => ScoreCard(
                       eventId: event_id,
                       eventData: eventData,
-                      judges: [],
+                 //     judges: [],
                     ),
                   ),
                 );
@@ -1134,7 +1134,7 @@ class ArtContestItem extends StatelessWidget {
                     builder: (context) => ScoreCard(
                       eventId: event_id,
                       eventData: eventData,
-                      judges: [],
+                 //     judges: [],
                     ),
                   ),
                 );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:tutorial/main.dart';
 import 'dart:math';
 import 'dart:convert';
 import 'package:tutorial/pages/contestants.dart' as contestants;
@@ -82,9 +83,17 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     color: Color.fromARGB(255, 5, 78, 7),
   ),
   onPressed: () {
-    Navigator.pop(context); // Use pop to navigate back
+   // var jsonResponse = json.decode(res.body);
+   // var myToken = jsonResponse['token'];
+   // prefs.setString('token', myToken);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const SearchEvents(token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTY2N2UzY2EwODcyZGI0NTNjZGFlOGQiLCJlbWFpbCI6ImF1YnJleWRhbm83QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiYWRtaW4xMjMiLCJpYXQiOjE3MDE1NjMzMDgsImV4cCI6MTcwMTU2NjkwOH0.lTl3R223HHLxj-vO1dJ1ulmGT1kPLOb2El_U-XZB1t4"),
+      ),
+    );
   },
 ),
+
 
       ),
       body: SingleChildScrollView(
@@ -415,7 +424,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
            ElevatedButton(
   onPressed: () async {
     final event = createEventFromControllers();
-    final authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTY2N2UzY2EwODcyZGI0NTNjZGFlOGQiLCJlbWFpbCI6ImF1YnJleWRhbm83QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiYWRtaW4xMjMiLCJpYXQiOjE3MDEzOTY0NzIsImV4cCI6MTcwMTQwMDA3Mn0.I0_4g44JVDoOTp6lGM3GTmA5TngtPYJ1PgP6dG7Tlks"; // Replace with your actual authentication token
+    final authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTY2N2UzY2EwODcyZGI0NTNjZGFlOGQiLCJlbWFpbCI6ImF1YnJleWRhbm83QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiYWRtaW4xMjMiLCJpYXQiOjE3MDE1Njc2NTcsImV4cCI6MTcwMTU3MTI1N30.PkHOSij1vsLwqlUpTvxAruwnIaphO_gXkpj03_u-SUg"; // Replace with your actual authentication token
     final createdEventId = await createEvent(event, authToken);
     if (createdEventId != null) {
       Navigator.of(context).push(MaterialPageRoute(

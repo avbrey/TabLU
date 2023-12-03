@@ -1030,7 +1030,7 @@ class _JoinEventsPageState extends State<JoinEvents> {
       MaterialPageRoute(
         builder: (context) => ScoreCard(eventId: eventId, 
         eventData: widget.events.toJson(), 
-        judges: []
+     //   judges: []
         ),
       ),
     );

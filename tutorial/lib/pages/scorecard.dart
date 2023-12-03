@@ -5,6 +5,7 @@ import 'package:tutorial/pages/contestants.dart';
 import 'package:tutorial/models/categorymodel.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
+import 'package:tutorial/pages/searchevents.dart';
 
 class Event {
   String eventId;
@@ -181,12 +182,12 @@ class User {
 class ScoreCard extends StatefulWidget {
   String eventId;
   final Map<String, dynamic> eventData;
-  final List<User> judges;
+ // final List<User> judges;
 
   ScoreCard({
     required this.eventId, 
     required this.eventData,
-    required this.judges
+   // required this.judges
 
   });
 
@@ -746,7 +747,7 @@ class _ScoreCardState extends State<ScoreCard> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             final String eventId = snapshot.data ?? 'default_event_id';
-            return ScoreCard(eventId: eventId, eventData: eventData, judges: [],);
+            return ScoreCard(eventId: eventId, eventData: eventData, );//judges: [],);
           } else if (snapshot.hasError) {
             return Center(
               child: Text('Error: ${snapshot.error}'),
@@ -820,10 +821,15 @@ class _ScoreCardState extends State<ScoreCard> {
                 color: Color(0xFF054E07),
               ),
               onPressed: () {
-                // Handle home icon press
-                // For example, navigate to the home screen
-                Navigator.popUntil(context, (route) => route.isFirst);
-              },
+   // var jsonResponse = json.decode(res.body);
+   // var myToken = jsonResponse['token'];
+   // prefs.setString('token', myToken);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const SearchEvents(token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTY2N2UzY2EwODcyZGI0NTNjZGFlOGQiLCJlbWFpbCI6ImF1YnJleWRhbm83QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiYWRtaW4xMjMiLCJpYXQiOjE3MDE1NjMzMDgsImV4cCI6MTcwMTU2NjkwOH0.lTl3R223HHLxj-vO1dJ1ulmGT1kPLOb2El_U-XZB1t4"),
+      ),
+    );
+  },
             ),
           ],
           centerTitle: true,
@@ -976,7 +982,7 @@ class _ScoreCardState extends State<ScoreCard> {
               ),
             ),
           ),
-          Expanded(
+        /*  Expanded(
             child: ListView.builder(
               itemCount: widget.judges.length,
               itemBuilder: (context, index) {
@@ -985,7 +991,9 @@ class _ScoreCardState extends State<ScoreCard> {
                   // Customize appearance as needed
                 );
               },
-            ),),],),),),),
+            ),)*/
+            
+            ],),),),),
 
       ]))),
       bottomNavigationBar: Padding(

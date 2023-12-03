@@ -401,7 +401,7 @@ Future<void> createCriteria(
               builder: (context) => ScoreCard(
                 eventId: widget.eventId,
                 eventData: eventData,
-                judges: [],
+             //   judges: judges,
               ),
             ),
           );
