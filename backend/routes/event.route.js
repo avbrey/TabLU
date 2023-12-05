@@ -233,9 +233,7 @@ router.get('/events/:eventId', async (req, res) => {
       return res.status(httpStatus.NOT_FOUND).json({ error: 'Invalid event ID' });
     }
 
-   /* if (!fetchedEvent || !fetchedEvent._id) {
-      return res.status(httpStatus.NOT_FOUND).json({ error: 'Event not found' });
-    }*/
+
 
     const modifiedResponse = {
       eventId: fetchedEvent._id || mongoose.Types.ObjectId(),
@@ -328,26 +326,7 @@ router.get('/latest-event-id', async (req, res) => {
     res.status(500).json({ error: 'Failed to retrieve latest event ID', details: err.message });
   }
 });
-/*
-router.get('/pageant-events', async (req, res) => {
-  try {
- //   const userId = req.user._id;
-    const eventId = req.params.eventId; // Extract eventId from the request parameters
-  //  console.log('Received request at /pageant-events for user:', userId);
-    console.log('Query Parameters:', req.query);
 
-    // Update the query to include both event_category, user, and eventId
-    const pageantEvents = await Event.find({ event_category: "Pageants"}); //_id: eventId }); //user: userId, 
-
-    console.log('Pageant Events:', pageantEvents);
-
-    res.status(200).json(pageantEvents);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error', error: error.message });
-  }
-});
-*/
 
 router.get('/pageant-events', async (req, res) => {
   try {
@@ -363,23 +342,6 @@ router.get('/pageant-events', async (req, res) => {
 });
 
 
-/*router.get('/talent-events',async (req, res) => {
-  try {
-    const userId = req.user._id;
-    console.log('Received request at /talent-events for user:', userId);
-    console.log('Received request at /talent-events');
-    console.log('Query Parameters:', req.query);
-
-    const talentShowEvents = await Event.find({ event_category: "Talent Shows", user: userId });
-    console.log('Pageant Events:', talentShowEvents);
-
-    res.status(200).json(talentShowEvents);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error', error: error.message });
-  }
-});*/
-
 router.get('/talent-events', async (req, res) => {
   try {
     const talentShowEvents = await Event.find({ event_category: "Talent Shows" });
@@ -394,22 +356,8 @@ router.get('/talent-events', async (req, res) => {
 });
 
 
-/*router.get('/debate-events', async (req, res) => {
-  try {
-    const userId = req.user._id;
-    console.log('Received request at /debate-events for user:', userId);
-    console.log('Received request at /debate-events');
-    console.log('Query Parameters:', req.query);
 
-    const debateEvents = await Event.find({ event_category: "Debates", user: userId });
-    console.log('Debate Events:', debateEvents);
 
-    res.status(200).json(debateEvents);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error', error: error.message });
-  }
-});*/
 
 router.get('debate-events', async (req, res) => {
   try {
@@ -424,23 +372,9 @@ router.get('debate-events', async (req, res) => {
   }
 });
 
-/*router.get('/artcontest-events', async (req, res) => {
-  try {
-    const userId = req.user._id;
-    console.log('Received request at /pageant-events for user:', userId);
-    console.log('Received request at /artcontest-events');
-    console.log('Query Parameters:', req.query);
 
-    const artcontestEvents = await Event.find({ event_category: "Art Contests", userId });
-    console.log('Art Contest Events:', artcontestEvents);
 
-    res.status(200).json(artcontestEvents);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error', error: error.message });
-  }
-  
-});*/
+
 
 router.get('/artcontest-events', async (req, res) => {
   try {

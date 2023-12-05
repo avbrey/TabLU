@@ -222,7 +222,7 @@ class PageantItem extends StatelessWidget {
                 style: TextStyle(fontSize: 13, fontStyle: FontStyle.italic),
               ),
             ),
-            Padding(
+            /*Padding(
               padding: const EdgeInsets.only(left: 45.0),
               child: RichText(
                 text: TextSpan(
@@ -241,7 +241,7 @@ class PageantItem extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
+            ),*/
           ],
         ),
         onTap: () {
@@ -517,11 +517,12 @@ class TalentShowItem extends StatelessWidget {
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: 'Access Code: ',
+                      text: 'Event Key: ',
                       style: TextStyle(color: Colors.black, fontSize: 13),
                     ),
                     TextSpan(
-                      text: access_code,
+
+                    //  text: 'Event ID: $eventId',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 13,

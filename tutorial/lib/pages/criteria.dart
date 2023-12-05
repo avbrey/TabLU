@@ -127,6 +127,7 @@ class _CriteriasState extends State<Criterias> {
                     labelText: 'Percentage',
                     labelStyle: TextStyle(fontSize: 15, color: Colors.green),
                   ),
+                  
                 ),
               ],
             ),
@@ -297,6 +298,7 @@ Future<void> createCriteria(
                       ),
                       TextField(
                         controller: _percentageController,
+                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
                           labelText: 'Percentage',
                           labelStyle:
@@ -385,16 +387,16 @@ Future<void> createCriteria(
           final Event event = Event.fromJson(jsonDecode(response.body));
 
           final eventData = {
-  'eventName': event.event_name,
-  'eventDate': event.event_date,
-  'eventTime': event.event_time,
-  'accessCode': event.access_code,
-  'eventVenue': event.event_venue ?? 'n/a',  // Uncomment this line if event_venue is not null
-  'eventOrganizer': event.event_organizer ?? 'n/a',  // Add other fields as needed
-  'contestants': event.contestants ?? [],  // Assuming contestants is an array
-  'criteria': event.criteria ?? [],  // Assuming criteria is an array
-  // Add other data as needed
-};
+            'eventName': event.event_name,
+            'eventDate': event.event_date,
+            'eventTime': event.event_time,
+            'accessCode': event.access_code,
+            'eventVenue': event.event_venue ?? 'n/a',  // Uncomment this line if event_venue is not null
+            'eventOrganizer': event.event_organizer ?? 'n/a',  // Add other fields as needed
+            'contestants': event.contestants ?? [],  // Assuming contestants is an array
+            'criteria': event.criteria ?? [],  // Assuming criteria is an array
+            // Add other data as needed
+          };
 
           Navigator.of(context).push(
             MaterialPageRoute(

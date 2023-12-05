@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tutorial/pages/finalscore.dart';
 import 'dart:convert';
-import 'package:tutorial/pages/contestants.dart';
-import 'package:tutorial/models/categorymodel.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:tutorial/pages/searchevents.dart';
@@ -238,8 +236,8 @@ class _ScoreCardState extends State<ScoreCard> {
       final fetchedEventData = await fetchEventData(widget.eventId);
       if (fetchedEventData != null) {
         setState(() {
-          _contestants = extractContestants(fetchedEventData);
-          criterias = extractCriteria(fetchedEventData);
+        //  _contestants = extractContestants(fetchedEventData);
+         // criterias = extractCriteria(fetchedEventData);
         });
         print('Data initialized successfully');
       } else {
@@ -301,65 +299,75 @@ class _ScoreCardState extends State<ScoreCard> {
     }
   }
 
-  int? getCriteriaScore(
-      Contestant contestant, String criteriaName, int criteriaScore) {
-    print(
-        'Calling getCriteriaScore for ${contestant.name}, criteria: $criteriaName, score: $criteriaScore');
+ int? getCriteriaScore(
+  Contestant contestant, String criteriaName, int criteriaScore) {
+  print(
+      'Calling getCriteriaScore for ${contestant.name}, criteria: $criteriaName, score: $criteriaScore');
 
-    try {
-      Criteria matchingCriteria = contestant.criterias.firstWhere(
-        (criteria) {
-          print('Checking criteria: ${criteria.criterianame}');
-          return criteria.criterianame.trim().toLowerCase() ==
-              criteriaName.trim().toLowerCase();
-        },
-      );
-      matchingCriteria.score = criteriaScore;
-      int index = _contestants.indexWhere((c) => c.id == contestant.id);
-      if (index != -1) {
-        _contestants[index].criteriaScores = _contestants[index]
-            .criterias
-            .map((criteria) => criteria.score)
-            .toList();
-      }
+  try {
+    Criteria matchingCriteria = contestant.criterias.firstWhere(
+      (criteria) =>
+          criteria.criterianame.trim().toLowerCase() ==
+          criteriaName.trim().toLowerCase(),
+      orElse: () {
+        print('Matching criteria not found for: $criteriaName');
+        // Handle the case when no matching criteria is found
+        // You can return a default criteria or throw an exception if needed
+         return Criteria(
+          criterianame: 'Default Criteria',
+          percentage: 'Default Percentage',
+          eventId: 'Default Event ID',
+          score: 0,
+        );
+      },
+    );
+    matchingCriteria.score = criteriaScore;
 
-      print(
-          'Updated criteria score for ${contestant.name}: ${matchingCriteria.score}');
-      return matchingCriteria.score;
-    } catch (e) {
-      print('Matching criteria not found for: $criteriaName');
-      return null;
+    int index = _contestants.indexWhere((c) => c.id == contestant.id);
+    if (index != -1) {
+      _contestants[index].criteriaScores =
+          _contestants[index].criterias.map((criteria) => criteria.score).toList();
     }
+
+    print('Updated criteria score for ${contestant.name}: ${matchingCriteria.score}');
+    return matchingCriteria.score;
+  } catch (e) {
+    print('Matching criteria not found for: $criteriaName');
+    // Handle specific exceptions if needed
+    return null;
   }
+}
 
-  void updateTotalScore(Contestant contestant) {
-    print('Before updating total score: ${contestant.criteriaScores}');
+void updateTotalScore(Contestant contestant) {
+  print('Before updating total score: ${contestant.criteriaScores}');
 
-    int totalScore = contestant.criteriaScores.isNotEmpty
-        ? contestant.criteriaScores.fold(0, (sum, score) => sum + (score ?? 0))
-        : 0;
-    setState(() {
-      contestant.totalScore = totalScore;
-    });
+  int totalScore = contestant.criteriaScores.isNotEmpty
+      ? contestant.criteriaScores.fold(0, (sum, score) => sum + (score ?? 0))
+      : 0;
 
-    print('After updating total score: ${contestant.criteriaScores}');
-    print('Total score for ${contestant.name}: $totalScore');
-    print('Contestant after updating total score: $contestant');
-  }
+  setState(() {
+    contestant.totalScore = totalScore;
+  });
 
-  void updateEventId(String newEventId) {
-    setState(() {
-      widget.eventId = newEventId;
-    });
-  }
+  print('After updating total score: ${contestant.criteriaScores}');
+  print('Total score for ${contestant.name}: $totalScore');
+  print('Contestant after updating total score: $contestant');
+}
 
-  void updateContestants(List<Contestant> contestants) {
-    setState(() {
-      _contestants = contestants;
-    });
+void updateEventId(String newEventId) {
+  setState(() {
+    widget.eventId = newEventId;
+  });
+}
 
-    print('Updated Contestants List: $_contestants');
-  }
+void updateContestants(List<Contestant> contestants) {
+  setState(() {
+    _contestants = contestants;
+  });
+
+  print('Updated Contestants List: $_contestants');
+}
+
 
   void showEditDialog(
     BuildContext context,
@@ -488,7 +496,7 @@ class _ScoreCardState extends State<ScoreCard> {
                 Navigator.of(context).pop();
               },
               child: const Text(
-                'Close',
+                'Save',
                 style: TextStyle(color: Colors.green),
               ),
             ),
@@ -781,14 +789,15 @@ class _ScoreCardState extends State<ScoreCard> {
   }
 
 //------------------------------------------------------------
-  List<Criteria> extractCriteria(Map<String, dynamic> eventData) {
+  /*List<Criteria> extractCriteria(Map<String, dynamic> eventData) {
     final List<dynamic> criteriaData = eventData['criterias'];
     return criteriaData.map((c) => Criteria.fromJson(c)).toList();
   }
   List<Contestant> extractContestants(Map<String, dynamic> eventData) {
-    final List<dynamic> contestantsData = eventData['contestants'];
+    final List<dynamic> contestantsData = eventData['contestant'];
     return contestantsData.map((c) => Contestant.fromJson(c)).toList();
   }
+  */
   //----------------------------------------------------------------------
 
   @override
@@ -1009,52 +1018,64 @@ class _ScoreCardState extends State<ScoreCard> {
       builder: (BuildContext context) {
         return Container(
           width: 100,
-          height: 100,
-          child: AlertDialog(
-            title: const Center(child: Text('Event Information',
-            style: TextStyle(
-              fontSize: 18),)),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(child: Text('${events.isNotEmpty ? events[0]?.eventName ?? '' : ''}'.toUpperCase(),
-                style: const TextStyle(
-                  fontSize: 20
-                ),
-                )),
-                
-                   Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Event ID: ${events.isNotEmpty ? events[0]?.eventId ?? '' : ''}'),
-                    IconButton(
-              icon: const Icon(Icons.copy),
-              onPressed: () {
-             Clipboard.setData(new ClipboardData(text: '${events.isNotEmpty ? events[0]?.eventId ?? '' : ''}'));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Event ID copied to clipboard'),
+          height: 50,
+          child: Container(
+            height: 20,
+            child: AlertDialog(
+              title: const Center(child: Text('Event Information',
+              style: TextStyle(
+                fontSize: 18),)),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(child: Text('${events.isNotEmpty ? events[0]?.eventName ?? '' : ''}'.toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 20
                   ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                Text('Date & Time: ${events.isNotEmpty ? events[0]?.eventDate ?? '' : ''}, ${events.isNotEmpty ? events[0]?.eventTime ?? '' : ''}'),
-                Text('Category: ${events.isNotEmpty ? events[0]?.eventCategory ?? '' : ''}'),
-             Text('Venue: ${events.isNotEmpty ? events[0]?.eventVenue ?? '' : ''}'),
-               Text('Organizer: ${events.isNotEmpty ? events[0]?.eventOrganizer ?? '' : ''}'),
-              ],
-              
-            ),
-            actions: [
-              TextButton(
+                  )),
+                  
+                     Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Event ID: ${events.isNotEmpty ? events[0]?.eventId ?? '' : ''}',
+                      style: TextStyle(fontSize: 10),
+                      
+                      ),
+                      IconButton(
+                icon: const Icon(Icons.copy, size: 22,),
                 onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Close'),
+               Clipboard.setData(new ClipboardData(text: '${events.isNotEmpty ? events[0]?.eventId ?? '' : ''}'));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Event ID copied to clipboard'),
+                    ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  Text('Date & Time: ${events.isNotEmpty ? events[0]?.eventDate ?? '' : ''}, ${events.isNotEmpty ? events[0]?.eventTime ?? '' : ''}', style: 
+                  TextStyle(fontSize: 14)
+                  ),
+                  SizedBox(height: 10,),
+                  Text('Category: ${events.isNotEmpty ? events[0]?.eventCategory ?? '' : ''}'),
+                    SizedBox(height: 10,),
+               
+               Text('Venue: ${events.isNotEmpty ? events[0]?.eventVenue ?? '' : ''}'),
+                      SizedBox(height: 10,),
+                 Text('Organizer: ${events.isNotEmpty ? events[0]?.eventOrganizer ?? '' : ''}'),
+                ],
+                
               ),
-            ],
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Close'),
+                ),
+              ],
+            ),
           ),
         );
       },

@@ -11,6 +11,10 @@ const contestantSchema = new mongoose.Schema({
   department: { type: String, required: true },
   profilePic: String,
   eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true },
+  /*criteriascore: { type: Int, required: true },
+  criterianame: { type: String, ref: 'Criteria', required: true },
+  criteriaId: { type: mongoose.Schema.Types.ObjectId, ref: 'Criteria', required: true }*/
+
   // other fields
 });
 
@@ -76,6 +80,9 @@ router.post('/contestants', uploads.single('profilePic'), async (req, res) => {
       department,
       profilePic: profilePicPath,
       eventId,
+    /*criteriaId,
+    criterianame,
+    criteriascore,*/
     });
 
     const savedContestant = await contestant.save();
@@ -99,6 +106,7 @@ router.post('/contestants', uploads.single('profilePic'), async (req, res) => {
 });
 
 router.get('/contestants', (req, res) => {
+
   Contestant.find({}, (err, contestants) => {
     if (err) {
       res.status(500).json({ error: err.message });
@@ -134,6 +142,9 @@ router.put('/contestants/:id', uploads.single('profilePic'), async (req, res) =>
         department,
         profilePic: profilePicPath,
         eventId,
+      /*  criteriaId,
+        criterianame,
+        criteriascore*/ 
       },
       { new: true }
     );

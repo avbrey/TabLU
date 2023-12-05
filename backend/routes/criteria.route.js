@@ -59,4 +59,6 @@ const { someFunction, Event } = require('../models/event.model');
     }
   });*/
 
+  
+
   module.exports = router;

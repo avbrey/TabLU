@@ -9,8 +9,6 @@ const secretKey = process.env.JWT_SECRET || 'defaultSecretKey';
 const emailUser =  'avbreyrd@gmail.com'   // process.env.EMAIL_USER;
 const emailPassword = 'PasswordniAubrey016880'// process.env.EMAIL_PASSWORD
 
-
-
 // Middleware to verify JWT
 const verifyToken = (req, res, next) => {
     const token = req.headers.authorization;
@@ -69,21 +67,19 @@ router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Query the database for the user based on username
+   
     const user = await User.findOne({ username: username });
 
     if (!user) {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
 
-    // Check the password using bcrypt
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
 
-    // Password is valid, respond with user data
     const token = jwt.sign(
       { userId: user._id, email: user.email, username: user.username },
       secretKey,
@@ -99,15 +95,14 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/protected-route', verifyToken, (req, res) => {
-  // Access the user ID with req.userId
   res.status(200).json({ message: 'Access granted' });
 });
 
 // forgot password
 
 router.post('/send-verification-code', async (req, res) => {
-  const userEmail = req.body.email; // Assuming the email is sent in the request body
-  const verificationCode = generateVerificationCode(); // You need to implement this function
+  const userEmail = req.body.email; 
+  const verificationCode = generateVerificationCode(); 
 
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -124,8 +119,6 @@ router.post('/send-verification-code', async (req, res) => {
     },
   });
   
-  
-
   // Email content
   const mailOptions = {
     from: 'avbreyrd@gmail.com',
@@ -144,20 +137,17 @@ router.post('/send-verification-code', async (req, res) => {
   }
 });
 
-// Function to generate a random 4-digit verification code
 function generateVerificationCode() {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
-  
-  // Reset password route
   router.post('/reset-password', async (req, res) => {
     const { resetToken, newPassword } = req.body;
-  
+    console.log('Received resetToken:', resetToken);
+    console.log('Received newPassword:', newPassword);
     try {
-      // Find the user by reset token and check if it's still valid
       const user = await User.findOne({
         resetToken,
-        resetTokenExpiration: { $gt: Date.now() }, // Check if the token is still valid
+        resetTokenExpiration: { $gt: Date.now() },
       });
   
       if (!user) {
@@ -170,6 +160,7 @@ function generateVerificationCode() {
       user.password = hashedPassword;
       user.resetToken = null;
       user.resetTokenExpiration = null;
+      console.log('User Before Update:', user);
       await user.save();
       console.log('User Updated:', user);
   

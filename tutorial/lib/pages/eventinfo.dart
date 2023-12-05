@@ -5,6 +5,8 @@ import 'dart:math';
 import 'dart:convert';
 import 'package:tutorial/pages/contestants.dart' as contestants;
 import 'package:tutorial/pages/searchevents.dart';
+import 'package:tutorial/pages/globals.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Event {
   final String eventId;
@@ -30,6 +32,8 @@ class Event {
   });
 }
 
+
+
 class CreateEventScreen extends StatefulWidget {
   @override
   _CreateEventScreenState createState() => _CreateEventScreenState();
@@ -50,6 +54,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   void initState() {
     super.initState();
     accessCode = generateRandomAccessCode(8);
+    if(isAdding == false){
+
+    }
     //print('Generated Access Code: $accessCode');
   }
 
@@ -61,6 +68,32 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       (_) => charset.codeUnitAt(random.nextInt(charset.length)),
     ));
   }
+Future<void> saveToken(String token) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('token', token);
+}
+Future<String?> retrieveToken() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('token');
+}
+  
+Future<String?> login(String username, String password) async {
+  final response = await http.post(
+    Uri.parse('http://10.0.2.2:8080/login'), // Replace with your actual authentication endpoint
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'username': username, 'password': password}),
+  );
+
+  if (response.statusCode == 200) {
+    final token = jsonDecode(response.body)['token'];
+    await saveToken(token);
+
+    return token;
+  } else {
+    print('Login failed: ${response.body}');
+    return null;
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -423,16 +456,21 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
             const SizedBox(width: 10),
            ElevatedButton(
   onPressed: () async {
+     final String? authToken = await retrieveToken();
+     if (authToken != null) {
     final event = createEventFromControllers();
-    final authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTY2N2UzY2EwODcyZGI0NTNjZGFlOGQiLCJlbWFpbCI6ImF1YnJleWRhbm83QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiYWRtaW4xMjMiLCJpYXQiOjE3MDE1Njc2NTcsImV4cCI6MTcwMTU3MTI1N30.PkHOSij1vsLwqlUpTvxAruwnIaphO_gXkpj03_u-SUg"; // Replace with your actual authentication token
     final createdEventId = await createEvent(event, authToken);
     if (createdEventId != null) {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (context) =>
               contestants.Contestants(eventId: createdEventId)));
     }
-  },
-              style: ElevatedButton.styleFrom(
+  } else {
+    // Handle the case where login fails
+    print('Failed to create an Event');
+  }
+},
+                style: ElevatedButton.styleFrom(
                 primary: Colors.green,
                 onPrimary: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 50),

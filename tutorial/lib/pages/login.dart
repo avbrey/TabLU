@@ -6,7 +6,19 @@ import 'package:tutorial/pages/signin.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
+import 'package:provider/provider.dart';
 
+
+class AuthProvider with ChangeNotifier {
+  String? _token;
+
+  String? get token => _token;
+
+  void setToken(String? token) {
+    _token = token;
+    notifyListeners();
+  }
+}
 
 class Login extends StatefulWidget {
   const Login({Key? key});
@@ -36,7 +48,7 @@ void initSharedPref() async{
 
 }
 
-Future<void> logIn() async {
+/*Future<void> logIn() async {
   if (username.text.isEmpty || password.text.isEmpty) {
     // Handle empty fields and show an error message
     if (username.text.isEmpty) {
@@ -106,7 +118,7 @@ Future<void> logIn() async {
     print('Error: $e');
     // You might want to display a network error message to the user.
   }
-}
+}*/
 
 void showLoginErrorToast(String message) {
     Fluttertoast.showToast(
@@ -116,11 +128,97 @@ void showLoginErrorToast(String message) {
     );
   }
 
+   Future<void> logIn(BuildContext context, AuthProvider authProvider) async {
+  if (username.text.isEmpty || password.text.isEmpty) {
+    // Handle empty fields and show an error message
+    if (username.text.isEmpty) {
+      setState(() {
+        usernameBorderColor = Colors.red;
+      });
+    }
+    if (password.text.isEmpty) {
+      setState(() {
+        passwordBorderColor = Colors.red;
+      });
+    }
+    showLoginErrorToast('Please fill in all fields');
+    return; // Exit the method if fields are empty
+  }
+
+  try {
+    final Uri url = Uri.parse("http://10.0.2.2:8080/login");
+    var res = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'username': username.text,
+        'password': password.text,
+      }),
+    );
+
+    if (res.statusCode == 200) {
+      var jsonResponse = json.decode(res.body);
+      var myToken = jsonResponse['token'];
+      prefs.setString('token', myToken);
+       authProvider.setToken(myToken);
+
+
+      // Set the token using the AuthProvider
+      Provider.of<AuthProvider>(context, listen: false).setToken(myToken);
+
+      // Successful response
+      print(res.body);
+      usernameBorderColor = Colors.grey.withOpacity(0.5);
+      passwordBorderColor = Colors.grey.withOpacity(0.5);
+
+      final Map<String, dynamic> response = json.decode(res.body);
+      if (response.containsKey('message') && response['message'] == 'Successful login') {
+        // Navigate to the SearchEvents screen upon successful sign-in
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SearchEvents(token: myToken)),
+        );
+      } else {
+        showLoginErrorToast('Invalid username or password');
+        setState(() {
+          usernameBorderColor = Colors.red;
+          passwordBorderColor = Colors.red;
+        });
+      }
+    } else if (res.statusCode == 401) {
+      // Handle cases where the login was not successful
+      showLoginErrorToast('Invalid username or password');
+      setState(() {
+        usernameBorderColor = Colors.red;
+        passwordBorderColor = Colors.red;
+      });
+    } else {
+      print('HTTP Error: ${res.statusCode}');
+      // Handle other non-200 status codes
+      // You might want to display an error message or handle the error differently.
+    }
+  } catch (e) {
+    // Handle any exceptions (e.g., network errors)
+    print('Error: $e');
+    // You might want to display a network error message to the user.
+  }
+}
+
+// ===================================================================
+  Future<String?> getToken() async {
+    return prefs.getString('token');
+  }
+//==================================================================
   @override
   Widget build(BuildContext context) {
     double x = MediaQuery.of(context).size.width;
     double y = MediaQuery.of(context).size.height;
-    return Scaffold(
+    return ChangeNotifierProvider(
+      create: (context) => AuthProvider(),
+    
+    child: Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
@@ -137,7 +235,10 @@ void showLoginErrorToast(String message) {
           SingleChildScrollView(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
+
+              child: Consumer<AuthProvider>(
+                 builder: (context, authProvider, child) {
+              return Column(
                 children: [
                   Container(
                     margin: const EdgeInsets.only(top: 100),
@@ -339,7 +440,7 @@ void showLoginErrorToast(String message) {
                     child: ElevatedButton(
                       onPressed: () {
                      
-                          logIn();
+                      logIn(context, authProvider);
                     
                       },
                       style: ElevatedButton.styleFrom(
@@ -421,11 +522,11 @@ void showLoginErrorToast(String message) {
                     ),
                   ),
                 ],
-              ),
-            ),
+              );
+  }),
           ),
-        ],
+      )],
       ),
-    );
+    ));
   }
 }

@@ -15,14 +15,14 @@ class Contestant {
   String? id;
   String? selectedImagePath;
 
-  final List<Criterias> criterias; // i added
+  final List<Criterias> criterias;
 
   Contestant(
       {required this.name,
       required this.course,
       required this.department,
       required this.eventId,
-    required this.criterias, // i added
+    required this.criterias, 
       this.profilePic,
       this.selectedImage,
       this.id});
@@ -342,7 +342,7 @@ class _ContestantsState extends State<Contestants> {
         },
       ),
 
-//sed
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
         child: const Icon(Icons.add,
@@ -351,12 +351,15 @@ class _ContestantsState extends State<Contestants> {
         onPressed: () {
           
           showDialog(
+            
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
+
+    
                 title: const Text(
                   'Add Contestant Information',
                   style: TextStyle(
@@ -364,13 +367,22 @@ class _ContestantsState extends State<Contestants> {
                     color: Color(0xFF054E07),
                   ),
                 ),
+
+                
                 content: SingleChildScrollView(
+              
                   child: Column(
-                    // fix the circle avatar
+                
                     children: [
+              CircleAvatar(
+                              radius: 64,
+                              backgroundColor: Colors.grey[400],
+                            //  backgroundImage: FileImage(_selectedImage!),
+                            ),
+                            SizedBox(height: 15,),
                       ElevatedButton(
                         onPressed: () async {
-                          // Call the function to add a profile picture
+                          
                           await addProfilePicture(contestants.isNotEmpty
                               ? contestants[0]
                               : Contestant(
@@ -381,10 +393,8 @@ class _ContestantsState extends State<Contestants> {
                                   criterias: []
                                 ));
 
-                          // Update the UI to display the selected image
+                      
                           setState(() {});
-
-                          // Debug print
                           if (_selectedImage != null) {
                             print(
                                 'Selected Image: ${_selectedImage!.path.split('/').last}');
@@ -407,13 +417,13 @@ class _ContestantsState extends State<Contestants> {
                             const SizedBox(height: 10),
                             CircleAvatar(
                               radius: 64,
-                              backgroundColor: Colors.grey[200],
+                              backgroundColor: Colors.grey[400],
                               backgroundImage: FileImage(_selectedImage!),
                             ),
                           ],
                         ),
                       SizedBox(
-                        height: 30,
+                        height: 20,
                       ),
                       TextField(
                         controller: _nameController,
@@ -464,16 +474,14 @@ class _ContestantsState extends State<Contestants> {
                         criterias: []
                       );
 
-                      // Insert the new contestant into the list and update the UI
+        
                       insertItem(newContestant);
 
-                      // Clear input fields and selected image
                       _nameController.clear();
                       _courseController.clear();
                       _departmentController.clear();
                       _selectedImage = null;
 
-                      // Close the dialog
                       Navigator.pop(context);
                     },
                     child: const Text(
@@ -590,7 +598,7 @@ class ListItemWidget extends StatelessWidget {
             onTap: () => changeProfilePicture(),
             child: CircleAvatar(
               radius: 32,
-                 backgroundColor: Colors.grey[200],
+                 backgroundColor: Colors.grey[400],
               backgroundImage: contestant.selectedImage != null
                   ? FileImage(contestant.selectedImage!)
                   : null,

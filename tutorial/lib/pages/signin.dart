@@ -28,7 +28,6 @@ class _LoginPageState extends State<Signin> {
     final Uri url = Uri.parse("http://10.0.2.2:8080/signin");
 
       if (username.text.isEmpty || password.text.isEmpty) {
-    // Handle empty fields and show an error message
     if (username.text.isEmpty) {
       setState(() {
         usernameBorderColor = Colors.red;
@@ -45,7 +44,7 @@ class _LoginPageState extends State<Signin> {
       });
     }
     showLoginErrorToast('Please fill in all fields');
-    return; // Exit the method if fields are empty
+    return; 
   }
 
     try {
@@ -77,9 +76,7 @@ class _LoginPageState extends State<Signin> {
             });
 
       } else {
-        // Handle other error cases
         print('HTTP Error: ${response.statusCode}');
-        // You might want to display an error message or handle the error differently.
       }
     } catch (e) {
     
@@ -287,7 +284,7 @@ class _LoginPageState extends State<Signin> {
                                         showPassword
                                             ? Icons.visibility_off
                                             : Icons
-                                                .visibility, // Toggle icon based on showPassword state
+                                                .visibility, 
                                         color: Colors.green,
                                       ),
                                     ))
@@ -350,7 +347,7 @@ class _LoginPageState extends State<Signin> {
         ),
       ),
       child: Text(
-        'Sign In',
+        'Sign Up',
         style: TextStyle(
           color: isSelected ? Colors.white : Colors.black,
           fontSize: 18,
@@ -362,7 +359,7 @@ class _LoginPageState extends State<Signin> {
                 ),
                 const SizedBox(height: 30),
                 const SizedBox(
-                  width: 300, // Set the desired width
+                  width: 300,
                   child: Row(
                     children: [
                       Expanded(
@@ -390,7 +387,7 @@ class _LoginPageState extends State<Signin> {
                     ],
                   ),
                 ),
-                const SizedBox(
+             /*   const SizedBox(
                   height: 20,
                 ),
                 const Text(
@@ -399,11 +396,11 @@ class _LoginPageState extends State<Signin> {
                     fontSize: 14,
                     color: Colors.green,
                   ),
-                ),
+                ),*/
                 const SizedBox(
                   height: 20,
                 ),
-                Center(
+                /*Center(
                   child: Column(
                     children: [
                       const SizedBox(height: 10),
@@ -437,10 +434,8 @@ class _LoginPageState extends State<Signin> {
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
+                ),*/
+              
                 Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

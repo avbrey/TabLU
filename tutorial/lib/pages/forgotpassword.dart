@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:tutorial/pages/login.dart';
 
 class Forgotpass extends StatefulWidget {
+   
   @override
   State<Forgotpass> createState() => _ForgotpassState();
 }
@@ -21,7 +22,7 @@ class _ForgotpassState extends State<Forgotpass> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => EmailVerification(),
+            builder: (context) => EmailVerification(resetToken: response.body),
           ),
         );
       } else {
@@ -93,7 +94,7 @@ class _ForgotpassState extends State<Forgotpass> {
                   
                 ),
                 const Text(
-                      'Enter your email and we will send you a \n password reset link',
+                      'Enter your email and we will send you a \n a verification code',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 13, color: Colors.grey),
                     ),
@@ -163,6 +164,9 @@ class _ForgotpassState extends State<Forgotpass> {
 }
 
 class EmailVerification extends StatefulWidget {
+   final String resetToken;
+
+  EmailVerification({required this.resetToken});
   @override
   _EmailVerificationState createState() => _EmailVerificationState();
 }
@@ -239,7 +243,7 @@ class _EmailVerificationState extends State<EmailVerification> {
     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ResetPass(),
+                          builder: (context) =>  ResetPass(resetToken: widget.resetToken,),
                         ),
                       );
   },
@@ -268,7 +272,10 @@ class _EmailVerificationState extends State<EmailVerification> {
 }
 
 class ResetPass extends StatefulWidget {
-  const ResetPass({Key? key}) : super(key: key);
+final String resetToken;
+
+   ResetPass({Key? key, required this.resetToken}) : super(key: key);
+
 
   @override
   State<ResetPass> createState() => _ResetPassState();
@@ -423,7 +430,8 @@ class _ResetPassState extends State<ResetPass> {
     if (newPassword == confirmPassword) {
       // Perform the password reset
       print('Password reset successful. New Password: $newPassword');
-
+      print('Sending resetToken: ${widget.resetToken}');
+      print('Sending newPassword: $newPassword');
       // Show Snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -440,7 +448,6 @@ class _ResetPassState extends State<ResetPass> {
         ),
       );
                 } else {
-                  // Passwords do not match, handle accordingly
                   print('Passwords do not match');
                 }
               },

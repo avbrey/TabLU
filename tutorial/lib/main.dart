@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tutorial/pages/eventsmanagement.dart';
 import 'package:tutorial/pages/finalscore.dart';
 import 'package:tutorial/pages/login.dart';
 import 'package:tutorial/pages/scorecard.dart';
@@ -75,8 +76,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Poppins'),
- home: JwtDecoder.isExpired(token) == false ? SearchEvents(token: token) : SplashScreen(),
- 
+ //home: JwtDecoder.isExpired(token) == false ? SearchEvents(token: token) : SplashScreen(),
+ home: EventsManagement()
   
     );
   }

@@ -4,17 +4,18 @@ import 'package:tutorial/models/categorymodel.dart'; // as CategoryModel;
 import 'package:tutorial/models/codemodel.dart' as CodeModel;
 import 'package:tutorial/pages/editprofile.dart';
 import 'package:tutorial/pages/eventinfo.dart';
+import 'package:tutorial/pages/eventsmanagement.dart';
+import 'package:tutorial/pages/eventsjoined.dart';
 import 'package:tutorial/pages/forgotpassword.dart';
 import 'package:tutorial/pages/getstarted.dart';
 import 'package:tutorial/pages/help.dart';
 import 'package:tutorial/pages/notification.dart';
 import 'package:tutorial/pages/scorecard.dart';
-import 'package:tutorial/pages/settings.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:tutorial/pages/viewprofile.dart';
+
 
 
    TextEditingController searchController = TextEditingController();
@@ -29,7 +30,7 @@ class Event {
   final String eventDate;
   final String eventTime;
   final List<Contestant> contestants;
-  final List<Criteria> criterias; // I added this
+  final List<Criteria> criterias; 
   Event({
     required this.eventId,
     required this.accessCode,
@@ -40,7 +41,7 @@ class Event {
     required this.eventDate,
     required this.eventTime,
     required this.contestants,
-    required this.criterias, // I added this
+    required this.criterias, 
   });
   Map<String, dynamic> toJson() {
     return {
@@ -183,7 +184,7 @@ class Contestant {
 class Criteria {
   String criterianame;
   String percentage;
-  String eventId; // Event ID
+  String eventId; 
   int score;
   Criteria({
     required this.criterianame,
@@ -236,7 +237,6 @@ class AuthState extends ChangeNotifier {
 
   void logout() {
     isLoggedIn = false;
-    // Clear any other app state as needed
     notifyListeners();
   }
 }
@@ -250,7 +250,7 @@ class SearchEvents extends StatefulWidget {
   @override
   State<SearchEvents> createState() => _SearchEventsState();
 }
-//AuthState authState = Provider.of<AuthState>(context, listen: false);
+
  late AuthState authState;
 class _SearchEventsState extends State<SearchEvents> {
   late CodeModel.Event eventInstance;
@@ -280,8 +280,8 @@ class _SearchEventsState extends State<SearchEvents> {
       eventCategory: event_category,
       eventOrganizer: event_organizer,
       eventVenue: event_venue,
-      contestants: [], //the original value is contestants
-      criterias: [], //the original value is criterias
+      contestants: [], 
+      criterias: [], 
     );
   }
 
@@ -294,10 +294,9 @@ class _SearchEventsState extends State<SearchEvents> {
    if (response.statusCode == 200) {
   final Map<String, dynamic> eventJson = jsonDecode(response.body);
 
-  // Convert the JSON response to an Event object
   Event event = Event.fromJson(eventJson);
 
-  return [event]; // Return a list with a single event
+  return [event]; 
 } else {
   print('Error fetching events: ${response.body}');
   throw Exception('Failed to load events. Error: ${response.body}');
@@ -323,7 +322,7 @@ void initState() {
       email = jwtDecodedToken['email'].toString();
     } else {
       email = 'DefaultEmail@example.com';
-      // or throw Exception('Email not found in the JWT token.');
+  
     }
 
     username = jwtDecodedToken['username']?.toString() ?? 'DefaultUsername';
@@ -344,12 +343,12 @@ void initState() {
       backgroundColor: Colors.white,
      appBar: AppBar(
   elevation: 0.3,
-  centerTitle: true, // Set to   false to allow Row alignment
+  centerTitle: true, 
   title: 
       Text(
           'TabLU',
           style: TextStyle(
-            color: Colors.black, // Set the text color
+            color: Colors.black, 
             fontSize: 18, fontWeight: FontWeight.w500,
             fontStyle: FontStyle.italic
           ),
@@ -421,7 +420,7 @@ void initState() {
                            fit: BoxFit.fitWidth,
                           ),
                         ),
-                      ),
+                      )
                     ),
                     const SizedBox(height: 7),
                     Container(
@@ -547,7 +546,33 @@ void initState() {
                 Navigator.pop(context);
               },
             ),
-            ListTile(
+
+             ListTile(
+              leading: const Icon(Icons.leaderboard_outlined),
+              title: const Text('Event Management'),
+             onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EventsManagement()),
+                );
+              },
+            ),/*
+              ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text('Criteria'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+              ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text('Category'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),*/
+
+          /*  ListTile(
               leading: const Icon(Icons.settings),
               title: const Text('Settings'),
               onTap: () {
@@ -556,7 +581,7 @@ void initState() {
                   MaterialPageRoute(builder: (context) => SettingsPage()),
                 );
               },
-            ),
+            ),*/
             ListTile(
               leading: const Icon(Icons.help),
               title: const Text("Help and FAQ's"),
@@ -598,15 +623,28 @@ void initState() {
       
       ListView(children: [
         searchField(searchController),
-        const SizedBox(height: 40),
+        const SizedBox(height: 20),
+        
         categoriesSection(categories),
         const SizedBox(height: 10),
-        //createSection(),
-        const SizedBox(height: 40),
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, top: 25.0),
+            child: Text(
+               'Other Events',
+                style: TextStyle(
+               color: Color.fromARGB(255, 5, 70, 20),
+               fontSize: 18,
+              fontWeight: FontWeight.w600, 
+             ), ),
+          ),
+        joinedEvents(),
+    
+       
+        const SizedBox(height: 30),
         Container(
           height: 250,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(25),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.07),
@@ -653,7 +691,10 @@ void initState() {
                       if (code[index].name == 'Create Events') {
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (context) => CreateEventScreen()));
-                      } else if (code[index].name == 'Event Calendar') {
+                      } 
+                      
+                      
+                      else if (code[index].name == 'Event Calendar') {
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (context) =>
                                 CodeModel.EventCalendarScreen()));
@@ -820,6 +861,76 @@ void initState() {
       ),
     );
   }
+  
+ Container joinedEvents() {
+  return Container(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 10,
+        ),
+        Container(
+          height: 100,
+          width: 500,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EventsJoined(),
+                ),
+              );
+            },
+            child: Card(
+              color: Colors.white,
+              elevation: 1,
+              child: Padding(
+                padding: const EdgeInsets.only(top:5.0, left: 16),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.event, // Replace with the desired icon
+                      color: Colors.black,
+                      size: 50,
+                    ),
+                    SizedBox(width: 16),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0, left: 5.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Joined Events",
+                            style: const TextStyle(
+                              color: Color(0xFF054E07),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "Click here to see the events you've joined",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 13,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 
   Column categoriesSection(List<CategoryModel> categories) {
     return Column(
@@ -960,6 +1071,7 @@ void initState() {
   }
 }
 
+
 class EventApi {
   static Future<void> requestJoinEvent(String userId, String eventId) async {
     try {
@@ -968,7 +1080,6 @@ class EventApi {
         body: {
           'userId': userId,
           'eventId': eventId,
-          // Add any other parameters as needed
         },
       );
 
@@ -985,11 +1096,10 @@ class EventApi {
 
 class User {
   String username;
-  // Add other user-related fields as needed
 
   User({
     required this.username,
-    // Initialize other fields here
+
   });
 }
 
@@ -1005,9 +1115,8 @@ class JoinEvents extends StatefulWidget {
 
 class _JoinEventsPageState extends State<JoinEvents> {
 
-  // Function to handle join request
   void requestJoinEvent(BuildContext context) async {
-  String userId = 'USER_ID'; // Replace with the actual user ID
+  String userId = 'USER_ID';
   String eventId = widget.events.eventId;
 
   try {
@@ -1020,7 +1129,7 @@ class _JoinEventsPageState extends State<JoinEvents> {
       ),
     );
 
-    User user = getUser(); // Get the authenticated user
+    User user = getUser(); 
     setState(() {
       widget.judges.add(user);
     });
@@ -1045,12 +1154,45 @@ class _JoinEventsPageState extends State<JoinEvents> {
   }
 }
 
+
 User getUser() {
-  // Replace with your logic to get the authenticated user
-  // For demonstration purposes, a simple user is returned.
   return User(username: 'User'); 
 }
 
+
+Future<void> confirmToJoinEvent(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Join Event Confirmation'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Do you really want to join this event?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Confirm'),
+              onPressed: () {
+                 Navigator.of(context).pop(); 
+                 requestJoinEvent(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1079,19 +1221,39 @@ User getUser() {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          ListTile(
-            title: Text('Event Name: ${widget.events.eventName}'),
-            subtitle: Text('Event ID: ${widget.events.eventId}'),
+          Card(
+            child: ListTile(
+              title: Text('${widget.events.eventName}'),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text('Event ID: ${widget.events.eventId}'),
+              ),
+            ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              requestJoinEvent(context); // Pass the context here
-            },
-            child: const Text('Join Event'),
-          ),
+        ElevatedButton(
+                      onPressed: () {
+                     
+              confirmToJoinEvent(context); 
+                    
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      
+                      child: Text(
+                        'Join Event',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
         ],
       ),
     );
   }
 } 
-

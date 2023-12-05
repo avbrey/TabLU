@@ -85,17 +85,17 @@ class getStarted extends StatelessWidget {
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(
-                                    16.0), // Adjust the radius as needed
+                                    16.0), 
                               ),
                               child: Container(
                                 constraints: const BoxConstraints(
                                     maxWidth: 250.0,
-                                    minHeight: 45.0), // Specify button size
+                                    minHeight: 45.0),
                                 alignment: Alignment.center,
                                 child: const Text(
                                   'Get Started',
                                   style: TextStyle(
-                                      color: Colors.white), // Set text color
+                                      color: Colors.white), 
                                 ),
                               ),
                             ),
@@ -110,7 +110,7 @@ class getStarted extends StatelessWidget {
                                   MaterialPageRoute(
                                       builder: (context) => const Signin()));
                             },
-                            child: const Text("Sign In",
+                            child: const Text("Sign Up",
                                 style: TextStyle(color: Colors.green, fontWeight: FontWeight.w600,),
                                 
                           )

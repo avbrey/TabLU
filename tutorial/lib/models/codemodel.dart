@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
 import 'package:tutorial/pages/eventinfo.dart';
+import 'package:tutorial/pages/eventsjoined.dart';
 import 'package:tutorial/pages/searchevents.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -254,17 +255,14 @@ class _EventCalendarScreenState extends State<EventCalendarScreen> {
       appBar: AppBar(
         elevation: 0.0,
         centerTitle: true,
-        title: Container(
-          width: 50,
-          height: 50,
-          alignment: Alignment.center,
-          child: SvgPicture.asset(
-            'assets/icons/competition-contest-cyber-svgrepo-com.svg',
-            width: 50,
-            height: 50,
-            color: const Color.fromARGB(255, 5, 78, 7),
+        title: const Text(
+          'Event Calendar',
+          style: TextStyle(
+            fontSize: 18,
+            color: Color.fromARGB(255, 5, 78, 7),
           ),
         ),
+        
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(),
         leading: IconButton(
@@ -413,7 +411,16 @@ class CodeModel {
               builder: (context) => CreateEventScreen(),
             ),
           );
-        } else if (name == 'Event calendar') {
+        }
+        else if (name == 'Events Joined') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EventsJoined(),
+            ),
+          );
+        }
+         else if (name == 'Event calendar') {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -454,6 +461,7 @@ class CodeModel {
         boxIsSelected: false,
       ),
     );
+
 
     code.add(
       CodeModel(
